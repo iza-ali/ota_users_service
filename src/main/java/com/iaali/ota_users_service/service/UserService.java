@@ -1,14 +1,17 @@
 package com.iaali.ota_users_service.service;
 
-import com.iaali.ota_users_service.dto.UserDTO;
+import com.iaali.ota_users_service.dto.UserRegistrationRequestDTO;
+import com.iaali.ota_users_service.dto.UserResponseDTO;
 
 import java.util.List;
 
 public interface UserService {
 
-    UserDTO getById(Long id);
+    UserResponseDTO getById(Long id);
 
-    UserDTO getByEmail(String email);
+    UserResponseDTO getByEmail(String email);
 
-    List<UserDTO> getAll();
+    List<UserResponseDTO> getAll();
+
+    UserResponseDTO save(UserRegistrationRequestDTO user);
 }

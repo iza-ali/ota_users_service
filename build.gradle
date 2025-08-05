@@ -31,7 +31,9 @@ dependencies {
 	implementation 'org.flywaydb:flyway-mysql'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-	implementation("javax.validation:validation-api:2.0.1.Final")
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'org.springframework.security:spring-security-crypto:6.5.1'
+	implementation 'org.bouncycastle:bcprov-jdk18on:1.81'
 }
 
 tasks.named('test') {
