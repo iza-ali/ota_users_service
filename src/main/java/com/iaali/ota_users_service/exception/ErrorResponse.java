@@ -1,6 +1,5 @@
 package com.iaali.ota_users_service.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
