@@ -14,4 +14,10 @@ public interface UserService {
     List<UserResponseDTO> getAll();
 
     UserResponseDTO save(UserRequestDTO user);
+
+    boolean existsById(Long id);
+
+    UserResponseDTO updatePassword(Long id, String password);
+
+    UserResponseDTO updateEmail(Long id, String email);
 }

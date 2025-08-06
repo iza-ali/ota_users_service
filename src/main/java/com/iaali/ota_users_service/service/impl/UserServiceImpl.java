@@ -8,11 +8,13 @@ import com.iaali.ota_users_service.mapper.UserMapper;
 import com.iaali.ota_users_service.model.User;
 import com.iaali.ota_users_service.repository.UserRepository;
 import com.iaali.ota_users_service.service.UserService;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository repository;
     private UserMapper mapper;
+    private EntityManager entityManager;
 
     @Override
     public UserResponseDTO getById(Long id) {
@@ -51,4 +54,40 @@ public class UserServiceImpl implements UserService {
         return mapper.toDTO(entity);
     }
 
+    @Override
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
+    public UserResponseDTO updatePassword(Long id, String password) {
+        Optional<User> exists = repository.findById(id);
+
+        if (exists.isEmpty()) {
+            throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
+        }
+
+        User input = exists.get();
+
+        Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
+        input.setPasswordHash(encoder.encode(password));
+
+        User response = repository.save(input);
+        return mapper.toDTO(response);
+    }
+
+    @Override
+    public UserResponseDTO updateEmail(Long id, String email) {
+        Optional<User> exists = repository.findById(id);
+
+        if (exists.isEmpty()) {
+            throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
+        }
+
+        User input = exists.get();
+        input.setEmail(email);
+
+        User response = repository.save(input);
+        return mapper.toDTO(response);
+    }
 }

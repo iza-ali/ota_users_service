@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.tuple.GenerationTiming;
 
 
 import java.time.LocalDateTime;
@@ -38,7 +35,7 @@ public class User {
     @Column(nullable = false, columnDefinition = "ENUM('User', 'Admin') DEFAULT 'User'")
     private Role role;
 
-    @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
