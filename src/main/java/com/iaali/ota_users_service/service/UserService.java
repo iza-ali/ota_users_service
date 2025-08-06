@@ -20,4 +20,8 @@ public interface UserService {
     UserResponseDTO updatePassword(Long id, String password);
 
     UserResponseDTO updateEmail(Long id, String email);
+
+    void softDelete(Long id);
+
+    void hardDelete(Long id);
 }

@@ -68,10 +68,9 @@ public class UserController {
         if (id < 1) {
             throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
             // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        } else {
-            UserResponseDTO updatedUser = service.updatePassword(id, user.getPassword());
-            return ResponseEntity.ok(updatedUser);
         }
+        UserResponseDTO updatedUser = service.updatePassword(id, user.getPassword());
+        return ResponseEntity.ok(updatedUser);
     }
 
     @PatchMapping("/{id}/email")
@@ -81,9 +80,24 @@ public class UserController {
         if (id < 1) {
             throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
             // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        } else {
-            UserResponseDTO updatedUser = service.updateEmail(id, user.getEmail());
-            return ResponseEntity.ok(updatedUser);
         }
+        UserResponseDTO updatedUser = service.updateEmail(id, user.getEmail());
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public void softDeleteUser(@NonNull @PathVariable Long id) {
+        if (id < 1) {
+             throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
+        }
+        service.softDelete(id);
+    }
+
+    @DeleteMapping("/{id}/hard")
+    public void hardDeleteUser(@NonNull @PathVariable Long id) {
+        if (id < 1) {
+            throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
+        }
+        service.hardDelete(id);
     }
 }

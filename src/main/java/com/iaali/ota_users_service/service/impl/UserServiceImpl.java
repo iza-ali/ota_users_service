@@ -90,4 +90,27 @@ public class UserServiceImpl implements UserService {
         User response = repository.save(input);
         return mapper.toDTO(response);
     }
+
+    @Override
+    public void softDelete(Long id) {
+        Optional<User> exists = repository.findById(id);
+
+        if (exists.isEmpty()) {
+            throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
+        }
+
+        User input = exists.get();
+        input.setDeleted(true);
+        repository.save(input);
+    }
+
+    @Override
+    public void hardDelete(Long id) {
+        Optional<User> exists = repository.findById(id);
+
+        if (exists.isEmpty()) {
+            throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
+        }
+        repository.deleteById(id);
+    }
 }
