@@ -1,6 +1,6 @@
 package com.iaali.ota_users_service.service;
 
-import com.iaali.ota_users_service.dto.UserRegistrationRequestDTO;
+import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 
 import java.util.List;
@@ -13,5 +13,5 @@ public interface UserService {
 
     List<UserResponseDTO> getAll();
 
-    UserResponseDTO save(UserRegistrationRequestDTO user);
+    UserResponseDTO save(UserRequestDTO user);
 }

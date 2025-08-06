@@ -1,6 +1,6 @@
 package com.iaali.ota_users_service.service.impl;
 
-import com.iaali.ota_users_service.dto.UserRegistrationRequestDTO;
+import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.exception.ErrorEnum;
 import com.iaali.ota_users_service.exception.GlobalException;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO save(UserRegistrationRequestDTO user) {
+    public UserResponseDTO save(UserRequestDTO user) {
         Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
         user.setPassword(encoder.encode(user.getPassword()));
 

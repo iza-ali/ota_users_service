@@ -1,18 +1,18 @@
 package com.iaali.ota_users_service.controller;
 
-import com.iaali.ota_users_service.dto.UserRegistrationRequestDTO;
+import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.exception.ErrorEnum;
 import com.iaali.ota_users_service.exception.GlobalException;
 import com.iaali.ota_users_service.service.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import java.util.List;
 
 @RestController
@@ -47,10 +47,22 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerNewUser(@Valid @RequestBody UserRegistrationRequestDTO user){
+    public ResponseEntity<UserResponseDTO> registerNewUser(@Valid @RequestBody UserRequestDTO user){
 
+        //Bad Request automatically thrown when e-mail or password are not valid
+        if (user.getId() != null){
+            throw new GlobalException(ErrorEnum.BAD_REQUEST_ID_PROVIDED_FOR_POST);
+        }
         UserResponseDTO response = service.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
         // Internal error 500 is sent automatically when necessary
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<UserResponseDTO> registerNewUser(@Valid @RequestBody UserRequestDTO user){
+//
+//        UserResponseDTO response = service.save(user);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//        // Internal error 500 is sent automatically when necessary
+//    }
 }

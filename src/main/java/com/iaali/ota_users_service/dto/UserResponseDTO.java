@@ -1,10 +1,9 @@
 package com.iaali.ota_users_service.dto;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Email;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class UserResponseDTO {
+
+    private Long id;
 
     @Email
     private String email;
