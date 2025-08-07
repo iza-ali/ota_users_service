@@ -2,14 +2,14 @@ package com.iaali.ota_users_service.mapper;
 
 import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
-import com.iaali.ota_users_service.model.User;
+import com.iaali.ota_users_service.model.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserResponseDTO toDTO(User user);
+    UserResponseDTO toDTO(UserEntity userEntity);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "email", target = "email")
@@ -18,5 +18,5 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    User toEntity(UserRequestDTO userDto);
+    UserEntity toEntity(UserRequestDTO userDto);
 }

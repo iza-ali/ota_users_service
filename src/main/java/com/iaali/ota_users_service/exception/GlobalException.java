@@ -17,8 +17,8 @@ public class GlobalException extends RuntimeException{
         this.error = error;
     }
 
-    public GlobalException(String email, ErrorEnum error){
-        super(error.getDescription() + email);
+    public GlobalException(String string, ErrorEnum error){
+        super(error.getDescription() + string);
         this.error = error;
     }
 }

@@ -5,7 +5,7 @@ import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.exception.ErrorEnum;
 import com.iaali.ota_users_service.exception.GlobalException;
 import com.iaali.ota_users_service.mapper.UserMapper;
-import com.iaali.ota_users_service.model.User;
+import com.iaali.ota_users_service.model.UserEntity;
 import com.iaali.ota_users_service.repository.UserRepository;
 import com.iaali.ota_users_service.service.UserService;
 import jakarta.persistence.EntityManager;
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
         user.setPassword(encoder.encode(user.getPassword()));
 
-        User entity = repository.save(mapper.toEntity(user));
+        UserEntity entity = repository.save(mapper.toEntity(user));
         return mapper.toDTO(entity);
     }
 
@@ -61,52 +61,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO updatePassword(Long id, String password) {
-        Optional<User> exists = repository.findById(id);
+        Optional<UserEntity> exists = repository.findById(id);
 
         if (exists.isEmpty()) {
             throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
         }
 
-        User input = exists.get();
+        UserEntity input = exists.get();
 
         Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
         input.setPasswordHash(encoder.encode(password));
 
-        User response = repository.save(input);
+        UserEntity response = repository.save(input);
         return mapper.toDTO(response);
     }
 
     @Override
     public UserResponseDTO updateEmail(Long id, String email) {
-        Optional<User> exists = repository.findById(id);
+        Optional<UserEntity> exists = repository.findById(id);
 
         if (exists.isEmpty()) {
             throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
         }
 
-        User input = exists.get();
+        UserEntity input = exists.get();
         input.setEmail(email);
 
-        User response = repository.save(input);
+        UserEntity response = repository.save(input);
         return mapper.toDTO(response);
     }
 
     @Override
     public void softDelete(Long id) {
-        Optional<User> exists = repository.findById(id);
+        Optional<UserEntity> exists = repository.findById(id);
 
         if (exists.isEmpty()) {
             throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
         }
 
-        User input = exists.get();
+        UserEntity input = exists.get();
         input.setDeleted(true);
         repository.save(input);
     }
 
     @Override
     public void hardDelete(Long id) {
-        Optional<User> exists = repository.findById(id);
+        Optional<UserEntity> exists = repository.findById(id);
 
         if (exists.isEmpty()) {
             throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
