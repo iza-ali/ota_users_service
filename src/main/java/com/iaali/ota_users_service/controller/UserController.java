@@ -9,6 +9,8 @@ import com.iaali.ota_users_service.exception.ErrorEnum;
 import com.iaali.ota_users_service.exception.GlobalException;
 import com.iaali.ota_users_service.service.UserService;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
@@ -34,19 +36,18 @@ public class UserController {
     private final UserService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@NonNull @PathVariable Long id){
+    public ResponseEntity<UserResponseDTO> getUserById(@NonNull @PathVariable @NotNull @Positive Long id) {
 
-        if (id < 1) {
-            throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
-            // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        }
+        // Bad request is sent through validation when the ID is out of bounds
 
         return ResponseEntity.ok(service.getById(id));
         // Internal error 500 is sent automatically when necessary
     }
 
     @GetMapping("/email")
-    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @Email String email){
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @Email String email) {
+
+        // Bad request is sent through validation when e-mail is not formatted correctly
 
         return ResponseEntity.ok(service.getByEmail(email));
         // Internal error 500 is sent automatically when necessary
@@ -54,14 +55,16 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+
         return ResponseEntity.ok(service.getAll());
         // Internal error 500 response is shown automatically
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerNewUser(@Validated(CreateUser.class) @RequestBody UserRequestDTO user){
+    public ResponseEntity<UserResponseDTO> registerNewUser(@Validated(CreateUser.class) @RequestBody UserRequestDTO user) {
 
-        //Bad Request automatically thrown when e-mail or password are not valid
+        //Bad Request sent through validation when e-mail or password are not valid
+
         if (user.getId() != null){
             throw new GlobalException(ErrorEnum.BAD_REQUEST_ID_PROVIDED_FOR_POST);
         }
@@ -72,12 +75,10 @@ public class UserController {
 
     @PatchMapping("/{id}/password")
     public ResponseEntity<UserResponseDTO> editUserPassword(@Validated(PasswordUpdate.class) @RequestBody UserRequestDTO user,
-                                                              @NonNull @PathVariable Long id) {
+                                                              @NonNull @PathVariable @NotNull @Positive Long id) {
 
-        if (id < 1) {
-            throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
-            // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        }
+        // Bad request is sent through validation when the ID is out of bounds
+
         UserResponseDTO updatedUser = service.updatePassword(id, user.getPassword());
         return ResponseEntity.ok(updatedUser);
         // Internal error 500 is sent automatically when necessary
@@ -85,33 +86,29 @@ public class UserController {
 
     @PatchMapping("/{id}/email")
     public ResponseEntity<UserResponseDTO> editUserEmail(@Validated(EmailUpdate.class) @RequestBody UserRequestDTO user,
-                                                            @NonNull @PathVariable Long id) {
+                                                            @NonNull @PathVariable @NotNull @Positive Long id) {
 
-        if (id < 1) {
-            throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
-            // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        }
+        // Bad request is sent through validation when the ID is out of bounds
+
         UserResponseDTO updatedUser = service.updateEmail(id, user.getEmail());
         return ResponseEntity.ok(updatedUser);
         // Internal error 500 is sent automatically when necessary
     }
 
     @DeleteMapping("/{id}")
-    public void softDeleteUser(@NonNull @PathVariable Long id) {
-        if (id < 1) {
-             throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
-            // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        }
+    public void softDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+
+        // Bad request is sent through validation when the ID is out of bounds
+
         service.softDelete(id);
         // Internal error 500 is sent automatically when necessary
     }
 
     @DeleteMapping("/{id}/hard")
-    public void hardDeleteUser(@NonNull @PathVariable Long id) {
-        if (id < 1) {
-            throw new GlobalException(id, ErrorEnum.BAD_REQUEST_ID_TOO_SMALL);
-            // Bad request is sent automatically when the ID is above the MAX_LONG or a string
-        }
+    public void hardDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+
+        // Bad request is sent through validation when the ID is out of bounds
+
         service.hardDelete(id);
         // Internal error 500 is sent automatically when necessary
     }
