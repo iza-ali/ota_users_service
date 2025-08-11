@@ -47,10 +47,10 @@ class UserServiceTest {
         Long id = 1L;
 
         UserEntity entity = new UserEntity(id, "test@email.com", "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO = new UserResponseDTO(id, "test@email.com",
-                LocalDateTime.of(2025, 4, 1, 12, 0), null);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
         when(mapper.toDTO(entity)).thenReturn(responseDTO);
@@ -59,7 +59,7 @@ class UserServiceTest {
 
         assertEquals(1L, response.getId());
         assertEquals("test@email.com", response.getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0), response.getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
         assertNull(response.getUpdatedAt());
 
         verify(repository, times(1)).findById(id);
@@ -82,10 +82,10 @@ class UserServiceTest {
         String email = "test@email.com";
 
         UserEntity entity = new UserEntity(1L, email, "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO = new UserResponseDTO(1L, email,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
         when(repository.findByEmail(email)).thenReturn(Optional.of(entity));
         when(mapper.toDTO(entity)).thenReturn(responseDTO);
@@ -94,7 +94,7 @@ class UserServiceTest {
 
         assertEquals(1L, response.getId());
         assertEquals(email, response.getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0), response.getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
         assertNull(response.getUpdatedAt());
 
         verify(repository, times(1)).findByEmail(email);
@@ -115,17 +115,17 @@ class UserServiceTest {
     @Test
     void getAll_Successful() {
         UserEntity entity1 = new UserEntity(1L, "test@email.com", "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO1 = new UserResponseDTO(1L, "test@email.com",
-                LocalDateTime.of(2025, 4, 1, 12, 0), null);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
 
         UserEntity entity2 = new UserEntity(2L, "test2@email.com", "password2", Role.User,
-                LocalDateTime.of(2025, 5, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 5, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO2 = new UserResponseDTO(2L, "test2@email.com",
-                LocalDateTime.of(2025, 5, 1, 12, 0), null);
+                LocalDateTime.of(2025, 5, 1, 12, 0, 0), null);
 
         List<UserEntity> list = new ArrayList<>();
         list.add(entity1);
@@ -141,12 +141,12 @@ class UserServiceTest {
 
         assertEquals(1L, response.getFirst().getId());
         assertEquals("test@email.com", response.getFirst().getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0), response.getFirst().getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getFirst().getCreatedAt());
         assertNull(response.getFirst().getUpdatedAt());
 
         assertEquals(2L, response.get(1).getId());
         assertEquals("test2@email.com", response.get(1).getEmail());
-        assertEquals(LocalDateTime.of(2025, 5, 1, 12, 0), response.get(1).getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 5, 1, 12, 0, 0), response.get(1).getCreatedAt());
         assertNull(response.get(1).getUpdatedAt());
 
         verify(repository, times(1)).findAll();
@@ -159,10 +159,10 @@ class UserServiceTest {
         UserRequestDTO requestDTO = new UserRequestDTO("test@email.com", "password");
 
         UserEntity entity = new UserEntity(1L, "test@email.com", "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO = new UserResponseDTO(1L, "test@email.com",
-                LocalDateTime.of(2025, 4, 1, 12, 0), null);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
         when(mapper.toEntity(requestDTO)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(entity);
@@ -172,7 +172,7 @@ class UserServiceTest {
 
         assertEquals(1L, response.getId());
         assertEquals("test@email.com", response.getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0), response.getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
         assertNull(response.getUpdatedAt());
 
         verify(repository, times(1)).save(entity);
@@ -186,10 +186,10 @@ class UserServiceTest {
         String password = "password";
 
         UserEntity entity = new UserEntity(id, "test@email.com", password, Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO = new UserResponseDTO(id, "test@email.com",
-                LocalDateTime.of(2025, 4, 1, 12, 0), null);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
         when(repository.save(entity)).thenReturn(entity);
@@ -199,7 +199,7 @@ class UserServiceTest {
 
         assertEquals(id, response.getId());
         assertEquals("test@email.com", response.getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0), response.getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
         assertNull(response.getUpdatedAt());
 
         verify(repository, times(1)).findById(id);
@@ -226,10 +226,10 @@ class UserServiceTest {
         String email = "test@email.com";
 
         UserEntity entity = new UserEntity(id, email, "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         UserResponseDTO responseDTO = new UserResponseDTO(id, email,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
         when(repository.save(entity)).thenReturn(entity);
@@ -239,7 +239,7 @@ class UserServiceTest {
 
         assertEquals(id, response.getId());
         assertEquals(email, response.getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0), response.getCreatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
         assertNull(response.getUpdatedAt());
 
         verify(repository, times(1)).findById(id);
@@ -264,7 +264,7 @@ class UserServiceTest {
     void softDelete_Successful() {
         Long id = 1L;
         UserEntity entity = new UserEntity(id, "test@email.com", "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
 
@@ -291,7 +291,7 @@ class UserServiceTest {
     void hardDelete_Successful(){
         Long id = 1L;
         UserEntity entity = new UserEntity(id, "test@email.com", "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0), null, false);
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
         service.hardDelete(id);

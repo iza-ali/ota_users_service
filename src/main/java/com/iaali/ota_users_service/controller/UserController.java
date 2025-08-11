@@ -5,8 +5,6 @@ import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.dto.validation.CreateUser;
 import com.iaali.ota_users_service.dto.validation.EmailUpdate;
 import com.iaali.ota_users_service.dto.validation.PasswordUpdate;
-import com.iaali.ota_users_service.exception.ErrorEnum;
-import com.iaali.ota_users_service.exception.GlobalException;
 import com.iaali.ota_users_service.service.UserService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -74,7 +72,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> editUserPassword(@Validated(PasswordUpdate.class) @RequestBody UserRequestDTO user,
                                                               @NonNull @PathVariable @NotNull @Positive Long id) {
 
-        // Bad request is sent through validation when the ID is out of bounds
+        // Bad request is sent through validation when the ID is out of bounds or password is not valid
 
         UserResponseDTO updatedUser = service.updatePassword(id, user.getPassword());
         return ResponseEntity.ok(updatedUser);
@@ -85,7 +83,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> editUserEmail(@Validated(EmailUpdate.class) @RequestBody UserRequestDTO user,
                                                             @NonNull @PathVariable @NotNull @Positive Long id) {
 
-        // Bad request is sent through validation when the ID is out of bounds
+        // Bad request is sent through validation when the ID is out of bounds or e-mail is not valid
 
         UserResponseDTO updatedUser = service.updateEmail(id, user.getEmail());
         return ResponseEntity.ok(updatedUser);
@@ -93,20 +91,22 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void softDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Void> softDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 
         service.softDelete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         // Internal error 500 is sent automatically when necessary
     }
 
     @DeleteMapping("/{id}/hard")
-    public void hardDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Void> hardDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 
         service.hardDelete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         // Internal error 500 is sent automatically when necessary
     }
 }
