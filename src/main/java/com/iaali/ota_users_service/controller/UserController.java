@@ -65,9 +65,6 @@ public class UserController {
 
         //Bad Request sent through validation when e-mail or password are not valid
 
-        if (user.getId() != null){
-            throw new GlobalException(ErrorEnum.BAD_REQUEST_ID_PROVIDED_FOR_POST);
-        }
         UserResponseDTO response = service.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
         // Internal error 500 is sent automatically when necessary

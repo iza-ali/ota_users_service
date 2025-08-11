@@ -16,8 +16,6 @@ import lombok.NoArgsConstructor;
 
 public class UserRequestDTO {
 
-    private Long id;
-
     @Email(groups = {EmailUpdate.class, CreateUser.class})
     @NotBlank(message = "Email is required", groups = {EmailUpdate.class, CreateUser.class})
     private String email;

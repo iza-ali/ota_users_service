@@ -1,4 +1,4 @@
-package com.iaali.ota_users_service.model;
+package com.iaali.ota_users_service.entity;
 
 
 import jakarta.persistence.GeneratedValue;
