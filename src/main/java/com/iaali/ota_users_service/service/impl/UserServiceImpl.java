@@ -1,12 +1,15 @@
 package com.iaali.ota_users_service.service.impl;
 
+import com.iaali.ota_users_service.dto.ProfileResponseDTO;
 import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.exception.ErrorEnum;
 import com.iaali.ota_users_service.exception.GlobalException;
+import com.iaali.ota_users_service.mapper.ProfileMapper;
 import com.iaali.ota_users_service.mapper.UserMapper;
 import com.iaali.ota_users_service.entity.UserEntity;
 import com.iaali.ota_users_service.repository.UserRepository;
+import com.iaali.ota_users_service.service.ProfileService;
 import com.iaali.ota_users_service.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -20,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository repository;
     private UserMapper mapper;
+
+    private ProfileService profileService;
+    private ProfileMapper profileMapper;
 
     @Override
     public UserResponseDTO getById(Long id) {
@@ -40,6 +46,11 @@ public class UserServiceImpl implements UserService {
         return repository.findAll().stream()
                 .map(mapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    public ProfileResponseDTO getAssociatedProfile(Long id) {
+        return profileService.getByUserId(id);
     }
 
     @Override

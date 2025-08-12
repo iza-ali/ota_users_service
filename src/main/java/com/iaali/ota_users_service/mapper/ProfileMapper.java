@@ -2,10 +2,7 @@ package com.iaali.ota_users_service.mapper;
 
 import com.iaali.ota_users_service.dto.ProfileRequestDTO;
 import com.iaali.ota_users_service.dto.ProfileResponseDTO;
-import com.iaali.ota_users_service.dto.UserRequestDTO;
-import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.entity.ProfileEntity;
-import com.iaali.ota_users_service.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -15,8 +15,11 @@ public enum ErrorEnum {
     BAD_REQUEST_ID_INPUT_NOT_VALID_FOR_UPDATE(HttpStatus.BAD_REQUEST, "ID in PUT request body must be null or the same as the ID in the URI. URI ID is "),
 
 //  For User entity
-    NOT_FOUND_USER_EMAIL(HttpStatus.NOT_FOUND, "Could not find User with e-mail ");
+    NOT_FOUND_USER_EMAIL(HttpStatus.NOT_FOUND, "Could not find User with e-mail "),
 
+// For Profile entity
+    CONFLICT_PROFILE_USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Another user already has this username"),
+    NOT_FOUND_PROFILE_USERNAME(HttpStatus.NOT_FOUND, "Could not find Profile with username ");
 
     private final HttpStatus status;
     private final String description;

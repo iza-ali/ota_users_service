@@ -1,5 +1,6 @@
 package com.iaali.ota_users_service.service;
 
+import com.iaali.ota_users_service.dto.ProfileResponseDTO;
 import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 
@@ -12,6 +13,8 @@ public interface UserService {
     UserResponseDTO getByEmail(String email);
 
     List<UserResponseDTO> getAll();
+
+    ProfileResponseDTO getAssociatedProfile(Long id);
 
     UserResponseDTO save(UserRequestDTO user);
 
