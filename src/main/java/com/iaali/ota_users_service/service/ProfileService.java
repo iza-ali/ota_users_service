@@ -1,8 +1,8 @@
 package com.iaali.ota_users_service.service;
 
 import com.iaali.ota_users_service.dto.ProfileResponseDTO;
-import com.iaali.ota_users_service.dto.ProfileRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
+import com.iaali.ota_users_service.entity.ProfileEntity;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface ProfileService {
 
     List<ProfileResponseDTO> getAll();
 
-    ProfileResponseDTO save(ProfileRequestDTO profile);
+    ProfileEntity save(ProfileEntity profile);
 
     ProfileResponseDTO updateUsername(Long id, String username);
 

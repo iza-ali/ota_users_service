@@ -1,6 +1,5 @@
 package com.iaali.ota_users_service.service.impl;
 
-import com.iaali.ota_users_service.dto.ProfileRequestDTO;
 import com.iaali.ota_users_service.dto.ProfileResponseDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.entity.ProfileEntity;
@@ -53,7 +52,6 @@ public class ProfileServiceImpl implements ProfileService {
         return userMapper.toDTO(profile.getUser());
     }
 
-
     @Override
     public List<ProfileResponseDTO> getAll() {
         return repository.findAll().stream()
@@ -62,9 +60,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileResponseDTO save(ProfileRequestDTO profile) {
-        ProfileEntity entity = repository.save(mapper.toEntity(profile));
-        return mapper.toDTO(entity);
+    public ProfileEntity save(ProfileEntity profile) {
+        return repository.save(profile);
     }
 
     @Override
@@ -115,5 +112,6 @@ public class ProfileServiceImpl implements ProfileService {
         repository.findById(id).orElseThrow(() -> new GlobalException(id, ErrorEnum.NOT_FOUND_ID));
 
         repository.deleteById(id);
+        // Associated user is automatically deleted due to CascadeType.REMOVE
     }
 }

@@ -16,6 +16,7 @@ public enum ErrorEnum {
 
 //  For User entity
     NOT_FOUND_USER_EMAIL(HttpStatus.NOT_FOUND, "Could not find User with e-mail "),
+    CONFLICT_USER_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Another user already has this e-mail"),
 
 // For Profile entity
     CONFLICT_PROFILE_USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Another user already has this username"),
