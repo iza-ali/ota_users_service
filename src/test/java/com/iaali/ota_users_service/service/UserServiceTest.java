@@ -1,6 +1,9 @@
 package com.iaali.ota_users_service.service;
 
-import com.iaali.ota_users_service.dto.*;
+import com.iaali.ota_users_service.dto.UserProfileCombinedResponseDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedRequestDTO;
+import com.iaali.ota_users_service.dto.UserResponseDTO;
+import com.iaali.ota_users_service.dto.ProfileResponseDTO;
 import com.iaali.ota_users_service.entity.ProfileEntity;
 import com.iaali.ota_users_service.entity.Role;
 import com.iaali.ota_users_service.exception.GlobalException;

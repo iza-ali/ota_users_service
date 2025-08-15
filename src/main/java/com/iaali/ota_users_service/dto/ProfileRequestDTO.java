@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 public class ProfileRequestDTO {
 
     @NotBlank(message = "Username is required", groups = {UsernameUpdate.class})
+    @Size(min = 3, max = 20, groups = {UsernameUpdate.class})
     private String username;
 
-    @NotBlank(message = "Username is required", groups = {BioUpdate.class})
-    @Size(max = 255)
+    @NotBlank(message = "Bio is required", groups = {BioUpdate.class})
+    @Size(max = 255, groups = {BioUpdate.class})
     private String bio;
 
     @NotBlank(message = "Photo is required", groups = {AvatarUpdate.class})
