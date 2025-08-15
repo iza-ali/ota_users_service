@@ -238,6 +238,40 @@ class ProfileServiceTest {
     }
 
     @Test
+    void save_Successful() {
+        ProfileEntity entity = new ProfileEntity(1L, null, "username", "bio", "url",
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
+
+        when(repository.existsByUsername("username")).thenReturn(false);
+        when(repository.save(entity)).thenReturn(entity);
+
+        ProfileEntity response = service.save(entity);
+
+        assertEquals(1L, response.getId());
+        assertEquals("username", response.getUsername());
+        assertEquals("bio", response.getBio());
+        assertEquals("url", response.getAvatarUrl());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
+        assertNull(response.getUpdatedAt());
+
+        verify(repository, times(1)).existsByUsername("username");
+        verify(repository, times(1)).save(entity);
+    }
+
+    @Test
+    void save_UsernameAlreadyExists() {
+        ProfileEntity entity = new ProfileEntity(1L, null, "username", "bio", "url",
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
+
+        when(repository.existsByUsername("username")).thenReturn(true);
+
+        assertThrows(GlobalException.class, () -> service.save(entity));
+
+        verify(repository, times(1)).existsByUsername("username");
+        verify(repository, never()).save(entity);
+    }
+
+    @Test
     void updateUsername_Successful() {
         Long id = 1L;
         String username = "username";

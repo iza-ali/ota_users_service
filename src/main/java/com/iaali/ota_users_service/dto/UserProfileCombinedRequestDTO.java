@@ -1,6 +1,7 @@
 package com.iaali.ota_users_service.dto;
 
 import com.iaali.ota_users_service.dto.validation.CreateUserProfile;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ public class UserProfileCombinedRequestDTO {
 
     //User fields
 
+    @Email(groups = CreateUserProfile.class)
     @NotBlank(message = "Email is required", groups = CreateUserProfile.class)
     private String email;
 

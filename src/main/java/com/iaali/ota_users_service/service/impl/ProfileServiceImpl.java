@@ -61,6 +61,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileEntity save(ProfileEntity profile) {
+        String username = profile.getUsername();
+
+        if (repository.existsByUsername(username)){
+            throw new GlobalException(username, ErrorEnum.CONFLICT_PROFILE_USERNAME_ALREADY_EXISTS);
+        }
+
         return repository.save(profile);
     }
 

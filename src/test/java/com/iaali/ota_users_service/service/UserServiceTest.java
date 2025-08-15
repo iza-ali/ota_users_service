@@ -176,6 +176,7 @@ class UserServiceTest {
                 LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, 1L, "username", "bio", "url",
                 LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
+        when(repository.existsByEmail("test@email.com")).thenReturn(false);
         when(creationMapper.toUserEntity(requestDTO)).thenReturn(userEntity);
         when(repository.save(userEntity)).thenReturn(userEntity);
         when(creationMapper.toProfileEntity(requestDTO)).thenReturn(profileEntity);
@@ -195,12 +196,28 @@ class UserServiceTest {
         assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getProfileCreatedAt());
         assertNull(response.getProfileUpdatedAt());
 
+        verify(repository, times(1)).existsByEmail("test@email.com");
         verify(creationMapper, times(1)).toUserEntity(requestDTO);
         verify(repository, times(1)).save(userEntity);
         verify(creationMapper, times(1)).toProfileEntity(requestDTO);
         verify(profileService, times(1)).save(profileEntity);
         verify(creationMapper, times(1)).toUserProfileResponse(userEntity, profileEntity);
     }
+
+    @Test
+    void save_EmailAlreadyExists() {
+        UserProfileCombinedRequestDTO requestDTO = new UserProfileCombinedRequestDTO
+                ("test@email.com", "password", "username", "bio", "url");
+
+        when(repository.existsByEmail("test@email.com")).thenReturn(true);
+
+        assertThrows(GlobalException.class, () -> service.save(requestDTO));
+
+        verify(repository, times(1)).existsByEmail("test@email.com");
+        verify(creationMapper, never()).toUserEntity(requestDTO);
+        verify(creationMapper, never()).toProfileEntity(requestDTO);
+    }
+
 
     @Test
     void updatePassword_Successful() {

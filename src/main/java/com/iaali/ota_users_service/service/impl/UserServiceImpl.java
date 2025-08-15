@@ -59,6 +59,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileCombinedResponseDTO save(UserProfileCombinedRequestDTO info) {
+        String email = info.getEmail();
+
+        if (repository.existsByEmail(email)){
+            throw new GlobalException(email, ErrorEnum.CONFLICT_USER_EMAIL_ALREADY_EXISTS);
+        }
+
         Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
         info.setPassword(encoder.encode(info.getPassword()));
 
@@ -86,10 +92,8 @@ public class UserServiceImpl implements UserService {
         UserEntity entity = repository.findById(id)
                 .orElseThrow(() -> new GlobalException(id, ErrorEnum.NOT_FOUND_ID));
 
-        Optional<UserEntity> exists = repository.findByEmail(email);
-
-        if (exists.isPresent()) {
-            throw new GlobalException(id, ErrorEnum.CONFLICT_USER_EMAIL_ALREADY_EXISTS);
+        if (repository.existsByEmail(email)){
+            throw new GlobalException(email, ErrorEnum.CONFLICT_USER_EMAIL_ALREADY_EXISTS);
         }
 
         entity.setEmail(email);
