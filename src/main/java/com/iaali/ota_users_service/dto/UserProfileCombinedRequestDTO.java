@@ -19,7 +19,7 @@ public class UserProfileCombinedRequestDTO {
     @NotBlank(message = "Email is required", groups = CreateUserProfile.class)
     private String email;
 
-    @Size(min = 8, message = "Password must be at least 8 characters long", groups = CreateUserProfile.class)
+    @Size(min = 8, max = 255, message = "Password must be longer than 8 characters and shorter than 255 characters", groups = CreateUserProfile.class)
     @NotBlank(message = "Password is required", groups = CreateUserProfile.class)
     private String password;
 
