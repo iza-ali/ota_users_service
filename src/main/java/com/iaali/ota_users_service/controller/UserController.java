@@ -9,6 +9,7 @@ import com.iaali.ota_users_service.dto.validation.EmailUpdate;
 import com.iaali.ota_users_service.dto.validation.PasswordUpdate;
 import com.iaali.ota_users_service.service.UserService;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @Email String email) {
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @NotBlank @Email String email) {
 
         // Bad request is sent through validation when e-mail is not formatted correctly
 

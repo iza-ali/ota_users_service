@@ -7,6 +7,7 @@ import com.iaali.ota_users_service.dto.validation.UsernameUpdate;
 import com.iaali.ota_users_service.dto.validation.BioUpdate;
 import com.iaali.ota_users_service.dto.validation.AvatarUpdate;
 import com.iaali.ota_users_service.service.ProfileService;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -40,7 +41,7 @@ public class ProfileController {
     }
 
     @GetMapping("/username")
-    public ResponseEntity<ProfileResponseDTO> getProfileByUsername(@RequestParam @Size(min = 3, max = 20) String username) {
+    public ResponseEntity<ProfileResponseDTO> getProfileByUsername(@RequestParam @NotBlank @Size(min = 3, max = 20) String username) {
 
         // Bad request is sent through validation when username length is out of bounds
 
