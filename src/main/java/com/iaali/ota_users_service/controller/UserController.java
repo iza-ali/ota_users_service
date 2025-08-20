@@ -1,28 +1,27 @@
 package com.iaali.ota_users_service.controller;
 
-import com.iaali.ota_users_service.dto.UserRequestDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedResponseDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
-import com.iaali.ota_users_service.dto.validation.CreateUser;
+import com.iaali.ota_users_service.dto.UserRequestDTO;
+import com.iaali.ota_users_service.dto.validation.CreateUserProfile;
 import com.iaali.ota_users_service.dto.validation.EmailUpdate;
 import com.iaali.ota_users_service.dto.validation.PasswordUpdate;
 import com.iaali.ota_users_service.service.UserService;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class UserController {
     private final UserService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 
@@ -43,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @Email String email) {
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @NotBlank @Email @Size(min = 4, max = 254) String email) {
 
         // Bad request is sent through validation when e-mail is not formatted correctly
 
@@ -59,18 +58,18 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerNewUser(@Validated(CreateUser.class) @RequestBody UserRequestDTO user) {
+    public ResponseEntity<UserProfileCombinedResponseDTO> registerNewUserAndProfile(@Validated(CreateUserProfile.class) @RequestBody UserProfileCombinedRequestDTO info) {
 
         //Bad Request sent through validation when e-mail or password are not valid
 
-        UserResponseDTO response = service.save(user);
+        UserProfileCombinedResponseDTO response = service.save(info);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
         // Internal error 500 is sent automatically when necessary
     }
 
     @PatchMapping("/{id}/password")
     public ResponseEntity<UserResponseDTO> editUserPassword(@Validated(PasswordUpdate.class) @RequestBody UserRequestDTO user,
-                                                              @NonNull @PathVariable @NotNull @Positive Long id) {
+                                                              @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds or password is not valid
 
@@ -81,7 +80,7 @@ public class UserController {
 
     @PatchMapping("/{id}/email")
     public ResponseEntity<UserResponseDTO> editUserEmail(@Validated(EmailUpdate.class) @RequestBody UserRequestDTO user,
-                                                            @NonNull @PathVariable @NotNull @Positive Long id) {
+                                                            @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds or e-mail is not valid
 
@@ -90,8 +89,10 @@ public class UserController {
         // Internal error 500 is sent automatically when necessary
     }
 
+    // Delete in User also deletes in Profile
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> softDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Void> softDeleteUser(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 
@@ -101,7 +102,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/hard")
-    public ResponseEntity<Void> hardDeleteUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Void> hardDeleteUser(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 

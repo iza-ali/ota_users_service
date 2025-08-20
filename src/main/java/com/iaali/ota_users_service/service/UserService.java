@@ -1,6 +1,7 @@
 package com.iaali.ota_users_service.service;
 
-import com.iaali.ota_users_service.dto.UserRequestDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedRequestDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedResponseDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 
 import java.util.List;
@@ -11,9 +12,11 @@ public interface UserService {
 
     UserResponseDTO getByEmail(String email);
 
+    Long getAssociatedProfileId(Long id);
+
     List<UserResponseDTO> getAll();
 
-    UserResponseDTO save(UserRequestDTO user);
+    UserProfileCombinedResponseDTO save(UserProfileCombinedRequestDTO dto);
 
     UserResponseDTO updatePassword(Long id, String password);
 

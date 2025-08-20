@@ -1,12 +1,17 @@
 package com.iaali.ota_users_service.service.impl;
 
-import com.iaali.ota_users_service.dto.UserRequestDTO;
+import com.iaali.ota_users_service.dto.ProfileResponseDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedRequestDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedResponseDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
+import com.iaali.ota_users_service.entity.ProfileEntity;
 import com.iaali.ota_users_service.exception.ErrorEnum;
 import com.iaali.ota_users_service.exception.GlobalException;
 import com.iaali.ota_users_service.mapper.UserMapper;
 import com.iaali.ota_users_service.entity.UserEntity;
+import com.iaali.ota_users_service.mapper.UserProfileCreationMapper;
 import com.iaali.ota_users_service.repository.UserRepository;
+import com.iaali.ota_users_service.service.ProfileService;
 import com.iaali.ota_users_service.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -20,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository repository;
     private UserMapper mapper;
+
+    ProfileService profileService;
+    UserProfileCreationMapper creationMapper;
 
     @Override
     public UserResponseDTO getById(Long id) {
@@ -36,6 +44,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Long getAssociatedProfileId(Long id) {
+        ProfileResponseDTO profileDTO = profileService.getByUserId(id);
+        return profileDTO.getId();
+    }
+
+    @Override
     public List<UserResponseDTO> getAll() {
         return repository.findAll().stream()
                 .map(mapper::toDTO)
@@ -43,12 +57,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO save(UserRequestDTO user) {
-        Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
-        user.setPassword(encoder.encode(user.getPassword()));
+    public UserProfileCombinedResponseDTO save(UserProfileCombinedRequestDTO info) {
+        String email = info.getEmail();
 
-        UserEntity entity = repository.save(mapper.toEntity(user));
-        return mapper.toDTO(entity);
+        if (repository.existsByEmail(email)){
+            throw new GlobalException(email, ErrorEnum.CONFLICT_USER_EMAIL_ALREADY_EXISTS);
+        }
+
+        Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
+        info.setPassword(encoder.encode(info.getPassword()));
+
+        UserEntity user = repository.save(creationMapper.toUserEntity(info));
+        ProfileEntity profileEntity = creationMapper.toProfileEntity(info);
+        profileEntity.setUser(user);
+        ProfileEntity profile = profileService.save(profileEntity);
+        return creationMapper.toUserProfileResponse(user, profile);
     }
 
     @Override
@@ -68,6 +91,10 @@ public class UserServiceImpl implements UserService {
         UserEntity entity = repository.findById(id)
                 .orElseThrow(() -> new GlobalException(id, ErrorEnum.NOT_FOUND_ID));
 
+        if (repository.existsByEmail(email)){
+            throw new GlobalException(email, ErrorEnum.CONFLICT_USER_EMAIL_ALREADY_EXISTS);
+        }
+
         entity.setEmail(email);
 
         UserEntity response = repository.save(entity);
@@ -81,12 +108,14 @@ public class UserServiceImpl implements UserService {
 
         entity.setDeleted(true);
         repository.save(entity);
+
+        Long profileId = getAssociatedProfileId(id);
+        profileService.softDelete(profileId);
     }
 
     @Override
     public void hardDelete(Long id) {
-        repository.findById(id).orElseThrow(() -> new GlobalException(id, ErrorEnum.NOT_FOUND_ID));
-
-        repository.deleteById(id);
+        Long profileId = getAssociatedProfileId(id);
+        profileService.hardDelete(profileId);
     }
 }

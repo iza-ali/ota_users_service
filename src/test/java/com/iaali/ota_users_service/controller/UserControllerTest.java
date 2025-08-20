@@ -1,6 +1,8 @@
 package com.iaali.ota_users_service.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iaali.ota_users_service.dto.UserProfileCombinedRequestDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedResponseDTO;
 import com.iaali.ota_users_service.dto.UserRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
 import com.iaali.ota_users_service.service.UserService;
@@ -22,7 +24,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -152,9 +153,12 @@ class UserControllerTest {
     }
 
     @Test
-    void registerNewUser_Successful() throws Exception {
-        UserRequestDTO request = new UserRequestDTO("test@email.com", "password");
-        UserResponseDTO response = new UserResponseDTO(1L, "test@email.com",
+    void registerNewUserAndProfile_Successful() throws Exception {
+        UserProfileCombinedRequestDTO request = new UserProfileCombinedRequestDTO
+                ("test@email.com", "password", "username", "bio", "url");
+
+        UserProfileCombinedResponseDTO response = new UserProfileCombinedResponseDTO(1L, "test@email.com",
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, 1L, "username", "bio", "url",
                 LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
         when(service.save(request)).thenReturn(response);
@@ -164,17 +168,24 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.email").value("test@email.com"))
-                .andExpect(jsonPath("$.createdAt").value("01-04-2025 12:00:00"))
-                .andExpect(jsonPath("$.updatedAt").doesNotExist());
+                .andExpect(jsonPath("$.userCreatedAt").value("01-04-2025 12:00:00"))
+                .andExpect(jsonPath("$.userUpdatedAt").doesNotExist())
+                .andExpect(jsonPath("$.profileId").value(1L))
+                .andExpect(jsonPath("$.username").value("username"))
+                .andExpect(jsonPath("$.bio").value("bio"))
+                .andExpect(jsonPath("$.avatarUrl").value("url"))
+                .andExpect(jsonPath("$.profileCreatedAt").value("01-04-2025 12:00:00"))
+                .andExpect(jsonPath("$.profileUpdatedAt").doesNotExist());
 
         verify(service, times(1)).save(request);
     }
 
     @Test
-    void registerNewUser_EmailFormattedWrong() throws Exception {
-        UserRequestDTO request = new UserRequestDTO("test", "password");
+    void registerNewUserAndProfile_EmailFormattedWrong() throws Exception {
+        UserProfileCombinedRequestDTO request = new UserProfileCombinedRequestDTO
+                ("test", "password", "username", "bio", "url");
 
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -187,8 +198,9 @@ class UserControllerTest {
     }
 
     @Test
-    void registerNewUser_PasswordTooShort() throws Exception {
-        UserRequestDTO request = new UserRequestDTO("test@email.com", "test");
+    void registerNewUserAndProfile_PasswordTooShort() throws Exception {
+        UserProfileCombinedRequestDTO request = new UserProfileCombinedRequestDTO
+                ("test@email.com", "test", "username", "bio", "url");
 
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -314,8 +326,6 @@ class UserControllerTest {
     void softDeleteUser_Successful() throws Exception {
         Long id = 1L;
 
-        doNothing().when(service).softDelete(id);
-
         mockMvc.perform(delete("/users/{id}", id))
                 .andExpect(status().isNoContent());
 
@@ -337,8 +347,6 @@ class UserControllerTest {
     @Test
     void hardDeleteUser_Successful() throws Exception {
         Long id = 1L;
-
-        doNothing().when(service).hardDelete(id);
 
         mockMvc.perform(delete("/users/{id}/hard", id))
                 .andExpect(status().isNoContent());

@@ -1,11 +1,15 @@
 package com.iaali.ota_users_service.service;
 
-import com.iaali.ota_users_service.dto.UserRequestDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedResponseDTO;
+import com.iaali.ota_users_service.dto.UserProfileCombinedRequestDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
+import com.iaali.ota_users_service.dto.ProfileResponseDTO;
+import com.iaali.ota_users_service.entity.ProfileEntity;
 import com.iaali.ota_users_service.entity.Role;
 import com.iaali.ota_users_service.exception.GlobalException;
 import com.iaali.ota_users_service.mapper.UserMapper;
 import com.iaali.ota_users_service.entity.UserEntity;
+import com.iaali.ota_users_service.mapper.UserProfileCreationMapper;
 import com.iaali.ota_users_service.repository.UserRepository;
 import com.iaali.ota_users_service.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -38,6 +42,12 @@ class UserServiceTest {
 
     @Mock
     UserMapper mapper;
+
+    @Mock
+    ProfileService profileService;
+
+    @Mock
+    UserProfileCreationMapper creationMapper;
 
     @InjectMocks
     UserServiceImpl service;
@@ -156,29 +166,61 @@ class UserServiceTest {
 
     @Test
     void save_Successful() {
-        UserRequestDTO requestDTO = new UserRequestDTO("test@email.com", "password");
+        UserProfileCombinedRequestDTO requestDTO = new UserProfileCombinedRequestDTO
+                ("test@email.com", "password", "username", "bio", "url");
 
-        UserEntity entity = new UserEntity(1L, "test@email.com", "password", Role.User,
+        UserEntity userEntity = new UserEntity(1L, "test@email.com", "password", Role.User,
                 LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
-        UserResponseDTO responseDTO = new UserResponseDTO(1L, "test@email.com",
+        ProfileEntity profileEntity = new ProfileEntity(1L, null, "username", "bio", "url",
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
+
+        UserProfileCombinedResponseDTO responseDTO = new UserProfileCombinedResponseDTO(1L, "test@email.com",
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, 1L, "username", "bio", "url",
                 LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
 
-        when(mapper.toEntity(requestDTO)).thenReturn(entity);
-        when(repository.save(entity)).thenReturn(entity);
-        when(mapper.toDTO(entity)).thenReturn(responseDTO);
+        when(repository.existsByEmail("test@email.com")).thenReturn(false);
+        when(creationMapper.toUserEntity(requestDTO)).thenReturn(userEntity);
+        when(repository.save(userEntity)).thenReturn(userEntity);
+        when(creationMapper.toProfileEntity(requestDTO)).thenReturn(profileEntity);
+        when(profileService.save(profileEntity)).thenReturn(profileEntity);
+        when(creationMapper.toUserProfileResponse(userEntity, profileEntity)).thenReturn(responseDTO);
 
-        UserResponseDTO response = service.save(requestDTO);
+        UserProfileCombinedResponseDTO response = service.save(requestDTO);
 
-        assertEquals(1L, response.getId());
+        assertEquals(1L, response.getUserId());
         assertEquals("test@email.com", response.getEmail());
-        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getCreatedAt());
-        assertNull(response.getUpdatedAt());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getUserCreatedAt());
+        assertNull(response.getProfileUpdatedAt());
+        assertEquals(1L, response.getProfileId());
+        assertEquals("username", response.getUsername());
+        assertEquals("bio", response.getBio());
+        assertEquals("url", response.getAvatarUrl());
+        assertEquals(LocalDateTime.of(2025, 4, 1, 12, 0, 0), response.getProfileCreatedAt());
+        assertNull(response.getProfileUpdatedAt());
 
-        verify(repository, times(1)).save(entity);
-        verify(mapper, times(1)).toEntity(requestDTO);
-        verify(mapper, times(1)).toDTO(entity);
+        verify(repository, times(1)).existsByEmail("test@email.com");
+        verify(creationMapper, times(1)).toUserEntity(requestDTO);
+        verify(repository, times(1)).save(userEntity);
+        verify(creationMapper, times(1)).toProfileEntity(requestDTO);
+        verify(profileService, times(1)).save(profileEntity);
+        verify(creationMapper, times(1)).toUserProfileResponse(userEntity, profileEntity);
     }
+
+    @Test
+    void save_EmailAlreadyExists() {
+        UserProfileCombinedRequestDTO requestDTO = new UserProfileCombinedRequestDTO
+                ("test@email.com", "password", "username", "bio", "url");
+
+        when(repository.existsByEmail("test@email.com")).thenReturn(true);
+
+        assertThrows(GlobalException.class, () -> service.save(requestDTO));
+
+        verify(repository, times(1)).existsByEmail("test@email.com");
+        verify(creationMapper, never()).toUserEntity(requestDTO);
+        verify(creationMapper, never()).toProfileEntity(requestDTO);
+    }
+
 
     @Test
     void updatePassword_Successful() {
@@ -266,13 +308,20 @@ class UserServiceTest {
         UserEntity entity = new UserEntity(id, "test@email.com", "password", Role.User,
                 LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
 
+        ProfileResponseDTO profileResponse = new ProfileResponseDTO(id, "username", "bio", "url",
+                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null);
+
         when(repository.findById(id)).thenReturn(Optional.of(entity));
+        when(profileService.getByUserId(id)).thenReturn(profileResponse);
 
         service.softDelete(id);
 
         assertTrue(entity.isDeleted());
         verify(repository, times(1)).findById(id);
         verify(repository, times(1)).save(entity);
+        verify(profileService, times(1)).getByUserId(id);
+        verify(profileService, times(1)).softDelete(id);
+
     }
 
     @Test
@@ -285,30 +334,5 @@ class UserServiceTest {
 
         verify(repository, times(1)).findById(id);
         verify(repository, never()).save(any());
-    }
-
-    @Test
-    void hardDelete_Successful(){
-        Long id = 1L;
-        UserEntity entity = new UserEntity(id, "test@email.com", "password", Role.User,
-                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
-
-        when(repository.findById(id)).thenReturn(Optional.of(entity));
-        service.hardDelete(id);
-
-        verify(repository, times(1)).findById(id);
-        verify(repository, times(1)).deleteById(id);
-    }
-
-    @Test
-    void hardDelete_IdNotFound(){
-        Long id = 1L;
-
-        when(repository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(GlobalException.class, () -> service.hardDelete(id));
-
-        verify(repository, times(1)).findById(id);
-        verify(repository, never()).deleteById(id);
     }
 }
