@@ -3,14 +3,23 @@ package com.iaali.ota_users_service.controller;
 import com.iaali.ota_users_service.dto.ProfileRequestDTO;
 import com.iaali.ota_users_service.dto.ProfileResponseDTO;
 import com.iaali.ota_users_service.dto.UserResponseDTO;
-import com.iaali.ota_users_service.dto.validation.*;
+import com.iaali.ota_users_service.dto.validation.UsernameUpdate;
+import com.iaali.ota_users_service.dto.validation.BioUpdate;
+import com.iaali.ota_users_service.dto.validation.AvatarUpdate;
 import com.iaali.ota_users_service.service.ProfileService;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -22,7 +31,7 @@ public class ProfileController {
     private final ProfileService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileResponseDTO> getProfileById(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<ProfileResponseDTO> getProfileById(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 
@@ -40,7 +49,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}/user-id")
-    public ResponseEntity<ProfileResponseDTO> getProfileByUserId(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<ProfileResponseDTO> getProfileByUserId(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when ID is out of bounds
 
@@ -49,7 +58,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}/user")
-    public ResponseEntity<UserResponseDTO> getAssociatedUser(@NonNull @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<UserResponseDTO> getAssociatedUser(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
 
@@ -68,7 +77,7 @@ public class ProfileController {
 
     @PatchMapping("/{id}/username")
     public ResponseEntity<ProfileResponseDTO> editProfileUsername(@Validated(UsernameUpdate.class) @RequestBody ProfileRequestDTO profile,
-                                                            @NonNull @PathVariable @NotNull @Positive Long id) {
+                                                            @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when username is out of bounds
 
@@ -79,7 +88,7 @@ public class ProfileController {
 
     @PatchMapping("/{id}/bio")
     public ResponseEntity<ProfileResponseDTO> editProfileBio(@Validated(BioUpdate.class) @RequestBody ProfileRequestDTO profile,
-                                                                  @NonNull @PathVariable @NotNull @Positive Long id) {
+                                                                  @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when bio is out of bounds
 
@@ -90,7 +99,7 @@ public class ProfileController {
 
     @PatchMapping("/{id}/avatar")
     public ResponseEntity<ProfileResponseDTO> editProfileAvatar(@Validated(AvatarUpdate.class) @RequestBody ProfileRequestDTO profile,
-                                                             @NonNull @PathVariable @NotNull @Positive Long id) {
+                                                             @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when given url is blank
 
