@@ -21,5 +21,6 @@ public class ProfileRequestDTO {
     private String bio;
 
     @NotBlank(message = "Photo is required", groups = {AvatarUpdate.class})
+    @Size(max = 2048, message = "Error, image URL too long", groups = {AvatarUpdate.class})
     private String avatarUrl;
 }

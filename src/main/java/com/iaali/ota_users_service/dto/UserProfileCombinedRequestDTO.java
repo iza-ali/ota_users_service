@@ -32,5 +32,6 @@ public class UserProfileCombinedRequestDTO {
     @Size(max = 255, groups = CreateUserProfile.class)
     private String bio;
 
+    @Size(max = 2048, message = "Error, image URL too long", groups = {CreateUserProfile.class})
     private String avatarUrl;
 }
