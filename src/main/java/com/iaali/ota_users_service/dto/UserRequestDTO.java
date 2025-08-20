@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserRequestDTO {
 
     @Email(groups = {EmailUpdate.class, CreateUserProfile.class})
+    @Size(min = 4, max = 254, message = "E-mail must be between 4 and 254 characters", groups = {EmailUpdate.class, CreateUserProfile.class})
     @NotBlank(message = "Email is required", groups = {EmailUpdate.class, CreateUserProfile.class})
     private String email;
 

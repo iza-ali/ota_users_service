@@ -8,10 +8,7 @@ import com.iaali.ota_users_service.dto.validation.CreateUserProfile;
 import com.iaali.ota_users_service.dto.validation.EmailUpdate;
 import com.iaali.ota_users_service.dto.validation.PasswordUpdate;
 import com.iaali.ota_users_service.service.UserService;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @NotBlank @Email String email) {
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @NotBlank @Email @Size(min = 4, max = 254) String email) {
 
         // Bad request is sent through validation when e-mail is not formatted correctly
 
