@@ -3,6 +3,7 @@ package com.iaali.ota_users_service.controller;
 import com.iaali.ota_users_service.dto.FollowRequestDTO;
 import com.iaali.ota_users_service.dto.FollowResponseDTO;
 import com.iaali.ota_users_service.service.FollowService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -70,7 +71,7 @@ public class FollowController {
     }
     
     @PostMapping
-    public ResponseEntity<FollowResponseDTO> createNewFollow(@RequestBody FollowRequestDTO follow) {
+    public ResponseEntity<FollowResponseDTO> createNewFollow(@Valid @RequestBody FollowRequestDTO follow) {
 
         //Bad Request sent through validation when IDs are out of bounds
         FollowResponseDTO response = service.save(follow);
