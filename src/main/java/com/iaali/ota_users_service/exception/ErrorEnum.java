@@ -18,9 +18,14 @@ public enum ErrorEnum {
     NOT_FOUND_USER_EMAIL(HttpStatus.NOT_FOUND, "Could not find User with e-mail "),
     CONFLICT_USER_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Another user already has this e-mail"),
 
-// For Profile entity
+//  For Profile entity
     CONFLICT_PROFILE_USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Another user already has this username"),
-    NOT_FOUND_PROFILE_USERNAME(HttpStatus.NOT_FOUND, "Could not find Profile with username ");
+    NOT_FOUND_PROFILE_USERNAME(HttpStatus.NOT_FOUND, "Could not find Profile with username "),
+
+//  For Follow entity
+    BAD_REQUEST_FOLLOW_IDS_MATCH(HttpStatus.BAD_REQUEST, "Profile cannot follow itself"),
+    CONFLICT_FOLLOW_ALREADY_EXISTS(HttpStatus.CONFLICT, "This follow already exists");
+
 
     private final HttpStatus status;
     private final String description;

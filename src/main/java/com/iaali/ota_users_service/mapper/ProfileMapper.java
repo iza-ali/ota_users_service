@@ -15,6 +15,7 @@ public interface ProfileMapper {
     @Mapping(source = "bio", target = "bio")
     @Mapping(source = "avatarUrl", target = "avatarUrl")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "deleted", ignore = true)

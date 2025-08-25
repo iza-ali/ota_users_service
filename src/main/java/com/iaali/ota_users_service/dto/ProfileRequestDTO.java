@@ -1,6 +1,8 @@
 package com.iaali.ota_users_service.dto;
 
-import com.iaali.ota_users_service.dto.validation.*;
+import com.iaali.ota_users_service.dto.validation.AvatarUpdate;
+import com.iaali.ota_users_service.dto.validation.BioUpdate;
+import com.iaali.ota_users_service.dto.validation.UsernameUpdate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

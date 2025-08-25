@@ -10,6 +10,8 @@ public interface ProfileService {
 
     ProfileResponseDTO getById(Long id);
 
+    ProfileEntity getEntityById(Long id);
+
     ProfileResponseDTO getByUsername(String username);
 
     ProfileResponseDTO getByUserId(Long id);

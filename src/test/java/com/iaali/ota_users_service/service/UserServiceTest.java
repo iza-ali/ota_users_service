@@ -77,7 +77,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getById_Unsuccessful() {
+    void getById_IdNotFound() {
         Long id = 1L;
 
         when(repository.findById(id)).thenReturn(Optional.empty());
