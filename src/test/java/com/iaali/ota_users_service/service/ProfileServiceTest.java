@@ -73,7 +73,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void getById_Unsuccessful() {
+    void getById_IdNotFound() {
         Long id = 1L;
 
         when(repository.findById(id)).thenReturn(Optional.empty());
@@ -434,14 +434,11 @@ class ProfileServiceTest {
     void hardDelete_Successful() {
         Long id = 1L;
 
-        ProfileEntity entity = new ProfileEntity(id, null, "username", "bio", "url",
-                LocalDateTime.of(2025, 4, 1, 12, 0, 0), null, false);
-
-        when(repository.findById(id)).thenReturn(Optional.of(entity));
+        when(repository.existsById(id)).thenReturn(true);
 
         service.hardDelete(id);
 
-        verify(repository, times(1)).findById(id);
+        verify(repository, times(1)).existsById(id);
         verify(repository, times(1)).deleteById(id);
     }
 
@@ -449,11 +446,11 @@ class ProfileServiceTest {
     void hardDelete_IdNotFound() {
         Long id = 1L;
 
-        when(repository.findById(id)).thenReturn(Optional.empty());
+        when(repository.existsById(id)).thenReturn(false);
 
         assertThrows(GlobalException.class, () -> service.hardDelete(id));
 
-        verify(repository, times(1)).findById(id);
+        verify(repository, times(1)).existsById(id);
         verify(repository, never()).save(any());
     }
 }

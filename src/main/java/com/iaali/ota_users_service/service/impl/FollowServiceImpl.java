@@ -84,6 +84,10 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public void delete(Long id) {
         // Only hard delete available for follow table
+        if (!repository.existsById(id)) {
+            throw new GlobalException(id, ErrorEnum.NOT_FOUND_ID);
+        }
+
         repository.deleteById(id);
     }
 }
