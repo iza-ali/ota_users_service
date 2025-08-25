@@ -32,39 +32,34 @@ public class UserController {
 
     private final UserService service;
 
+    // Internal error 500 is sent automatically when necessary for all requests
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
-
         return ResponseEntity.ok(service.getById(id));
-        // Internal error 500 is sent automatically when necessary
     }
 
     @GetMapping("/email")
     public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam @NotBlank @Email @Size(min = 4, max = 254) String email) {
 
         // Bad request is sent through validation when e-mail is not formatted correctly
-
         return ResponseEntity.ok(service.getByEmail(email));
-        // Internal error 500 is sent automatically when necessary
     }
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
 
         return ResponseEntity.ok(service.getAll());
-        // Internal error 500 response is shown automatically
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserProfileCombinedResponseDTO> registerNewUserAndProfile(@Validated(CreateUserProfile.class) @RequestBody UserProfileCombinedRequestDTO info) {
 
         //Bad Request sent through validation when e-mail or password are not valid
-
         UserProfileCombinedResponseDTO response = service.save(info);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        // Internal error 500 is sent automatically when necessary
     }
 
     @PatchMapping("/{id}/password")
@@ -72,10 +67,8 @@ public class UserController {
                                                               @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds or password is not valid
-
         UserResponseDTO updatedUser = service.updatePassword(id, user.getPassword());
         return ResponseEntity.ok(updatedUser);
-        // Internal error 500 is sent automatically when necessary
     }
 
     @PatchMapping("/{id}/email")
@@ -83,31 +76,25 @@ public class UserController {
                                                             @PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds or e-mail is not valid
-
         UserResponseDTO updatedUser = service.updateEmail(id, user.getEmail());
         return ResponseEntity.ok(updatedUser);
-        // Internal error 500 is sent automatically when necessary
     }
 
     // Delete in User also deletes in Profile
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> softDeleteUser(@PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Void> softDeleteUserById(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
-
         service.softDelete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        // Internal error 500 is sent automatically when necessary
     }
 
     @DeleteMapping("/{id}/hard")
-    public ResponseEntity<Void> hardDeleteUser(@PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Void> hardDeleteUserById(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
-
         service.hardDelete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        // Internal error 500 is sent automatically when necessary
+        return ResponseEntity.noContent().build();
     }
 }

@@ -31,6 +31,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public ProfileEntity getEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new GlobalException(id, ErrorEnum.NOT_FOUND_ID));
+    }
+
+    @Override
     public ProfileResponseDTO getByUsername(String username) {
         return repository.findByUsername(username)
                 .map(mapper::toDTO)

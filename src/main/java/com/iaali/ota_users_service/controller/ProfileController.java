@@ -31,22 +31,20 @@ public class ProfileController {
 
     private final ProfileService service;
 
+    // Internal error 500 is sent automatically when necessary for all requests
+
     @GetMapping("/{id}")
     public ResponseEntity<ProfileResponseDTO> getProfileById(@PathVariable @NotNull @Positive Long id) {
 
         // Bad request is sent through validation when the ID is out of bounds
-
         return ResponseEntity.ok(service.getById(id));
-        // Internal error 500 is sent automatically when necessary
     }
 
     @GetMapping("/username")
     public ResponseEntity<ProfileResponseDTO> getProfileByUsername(@RequestParam @NotBlank @Size(min = 3, max = 20) String username) {
 
         // Bad request is sent through validation when username length is out of bounds
-
         return ResponseEntity.ok(service.getByUsername(username));
-        // Internal error 500 is sent automatically when necessary
     }
 
     @GetMapping("/{id}/user-id")
@@ -55,7 +53,7 @@ public class ProfileController {
         // Bad request is sent through validation when ID is out of bounds
 
         return ResponseEntity.ok(service.getByUserId(id));
-        // Internal error 500 is sent automatically when necessary
+        
     }
 
     @GetMapping("/{id}/user")
@@ -64,14 +62,13 @@ public class ProfileController {
         // Bad request is sent through validation when the ID is out of bounds
 
         return ResponseEntity.ok(service.getAssociatedUser(id));
-        // Internal error 500 is sent automatically when necessary
+        
     }
 
     @GetMapping
     public ResponseEntity<List<ProfileResponseDTO>> getAllProfiles() {
 
         return ResponseEntity.ok(service.getAll());
-        // Internal error 500 response is shown automatically
     }
 
     // Can only create profile through UserController
@@ -84,7 +81,6 @@ public class ProfileController {
 
         ProfileResponseDTO updatedProfile = service.updateUsername(id, profile.getUsername());
         return ResponseEntity.ok(updatedProfile);
-        // Internal error 500 is sent automatically when necessary
     }
 
     @PatchMapping("/{id}/bio")
@@ -95,7 +91,6 @@ public class ProfileController {
 
         ProfileResponseDTO updatedProfile = service.updateBio(id, profile.getBio());
         return ResponseEntity.ok(updatedProfile);
-        // Internal error 500 is sent automatically when necessary
     }
 
     @PatchMapping("/{id}/avatar")
@@ -106,7 +101,6 @@ public class ProfileController {
 
         ProfileResponseDTO updatedProfile = service.updateAvatar(id, profile.getAvatarUrl());
         return ResponseEntity.ok(updatedProfile);
-        // Internal error 500 is sent automatically when necessary
     }
 
     // Can only delete profile through UserController
